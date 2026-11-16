@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@neon/auth": "^0.1.0",
+    "@vitejs/plugin-react": "^5.0.4",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jose": "^6.1.0",
