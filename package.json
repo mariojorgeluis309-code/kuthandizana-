@@ -1,0 +1,22 @@
+{
+  "name": "kuthandizana-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@neon/auth": "^0.1.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "jose": "^6.1.0",
+    "pg": "^8.16.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.12"
+  }
+}
