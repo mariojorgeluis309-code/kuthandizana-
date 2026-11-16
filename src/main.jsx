@@ -1,14 +1,14 @@
 import React,{useEffect,useState}from"react";
 import{createRoot}from"react-dom/client";
-import{createAuthClient}from"@neon/auth";
-import{BetterAuthReactAdapter}from"@neon/auth/react/adapters";
+import{createAuthClient}from"@neondatabase/auth";
+import{BetterAuthReactAdapter}from"@neondatabase/auth/react/adapters";
 import"./style.css";
 const authClient=createAuthClient(import.meta.env.VITE_NEON_AUTH_URL,{adapter:BetterAuthReactAdapter()});
 const api=async(path,token,options={})=>{const r=await fetch(path,{...options,headers:{"Content-Type":"application/json",...(token?{Authorization:"Bearer "+token}:{}),...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"Não foi possível concluir.");return d;};
 function Field({label,children}){return <label className="field"><span>{label}</span>{children}</label>}
 function App(){
 const[session,setSession]=useState(null),[token,setToken]=useState(""),[profile,setProfile]=useState(null),[stores,setStores]=useState([]),[active,setActive]=useState(null),[products,setProducts]=useState([]),[publicStores,setPublicStores]=useState([]),[adminStores,setAdminStores]=useState([]),[view,setView]=useState("home"),[authMode,setAuthMode]=useState("signup"),[busy,setBusy]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState(""),[authForm,setAuthForm]=useState({name:"",email:"",password:""}),[storeForm,setStoreForm]=useState({name:"",description:"",phone:"",whatsapp:"",address:"",city:""}),[productForm,setProductForm]=useState({name:"",description:"",price:"",image_url:"",stock_qty:"",unit:"unidade"}),[slug,setSlug]=useState("");
-const getToken=async()=>{const r=await authClient.token();if(r.error)throw new Error(r.error.message||"Sessão indisponível");return r.data.token;};
+const getToken=async()=>{const t=await authClient.getJWTToken();if(!t)throw new Error("Sessão indisponível. Entre novamente.");return t;};
 const loadPublic=()=>api("/api/stores").then(setPublicStores).catch(()=>{});
 const loadMe=async t=>{const m=await api("/api/me",t);setProfile(m.profile);setStores(m.stores||[]);if(m.profile?.platform_role==="super_admin")setAdminStores(await api("/api/admin/stores",t));};
 useEffect(()=>{loadPublic();authClient.getSession().then(async r=>{if(r.data?.user){setSession(r.data);try{const t=await getToken();setToken(t);await loadMe(t);}catch(e){setError(e.message);}}}).catch(()=>{});},[]);
